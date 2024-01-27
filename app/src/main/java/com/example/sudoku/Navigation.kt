@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.sudoku.feature.gridlist.GridListScreen
+import com.example.sudoku.feature.gridlist.GridComposable
 
 class Navigation {
 
@@ -21,7 +21,7 @@ class Navigation {
                 startDestination = GRID_LIST
             ) {
                 composable(GRID_LIST) {
-                    GridListScreen { gridMetadataId -> navController.navigate("$GRID/$gridMetadataId") }
+                    GridComposable { gridMetadataId -> navController.navigate("$GRID/$gridMetadataId") }
                 }
                 composable(
                     route = "$GRID/{$GRID_METADATA_ID_ARG}",

@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
     )]
 )
 data class GridDataEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val gridDataId: Long = 0L,
     @ColumnInfo(index = true)
     val gridMetadataId: Long,

@@ -34,7 +34,7 @@ fun Loaded(
         }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 private fun Preview() {
     val loaded = GridListViewModel.State.Loaded(

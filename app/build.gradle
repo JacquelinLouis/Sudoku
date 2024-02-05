@@ -80,4 +80,5 @@ dependencies {
     testImplementation "io.mockk:mockk-android:$mockk_version"
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    testImplementation "io.insert-koin:koin-android-test:$koin_version"
 }

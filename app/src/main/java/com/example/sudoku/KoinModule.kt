@@ -1,11 +1,13 @@
 package com.example.sudoku
 
 import android.content.Context
+import com.example.sudoku.feature.grid.GridViewModel
 import com.example.sudoku.feature.gridlist.GridListViewModel
 import com.example.sudoku.repository.GridRepository
 import com.example.sudoku.repository.inspect.InspectorBroadcastReceiver
 import com.example.sudoku.repository.source.room.AppDatabase
 import com.example.sudoku.usecase.CreateGridUseCase
+import com.example.sudoku.usecase.GetGridDataUseCase
 import com.example.sudoku.usecase.GetGridsMetadataUseCase
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
@@ -29,8 +31,10 @@ class KoinModule {
 
             factoryOf(::GetGridsMetadataUseCase)
             factoryOf(::CreateGridUseCase)
+            factoryOf(::GetGridDataUseCase)
 
             viewModelOf(::GridListViewModel)
+            viewModelOf(::GridViewModel)
         }
 
     }

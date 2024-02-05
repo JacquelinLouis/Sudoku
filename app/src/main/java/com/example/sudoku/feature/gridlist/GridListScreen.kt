@@ -1,8 +1,6 @@
 package com.example.sudoku.feature.gridlist
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -20,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
 
 @Composable
-fun GridComposable(
+fun GridListComposable(
     viewModel: GridListViewModel = koinInject(),
     onGridMetadataClick: (Long)->Unit) {
 

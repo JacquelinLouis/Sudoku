@@ -1,5 +1,6 @@
 package com.example.sudoku.feature.grid
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -37,7 +38,12 @@ fun GridComposable(
 @Composable
 fun GridScreen(grid: Grid?) {
     if (grid == null)
-        Text(text = "Loading grid")
+        Box(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = "Loading grid",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     else
         GridComponent(grid)
 }
@@ -89,5 +95,5 @@ private fun Preview() {
                 Pair((index % 10).toShort(), index % 3 == 0)
             }
         }
-    GridScreen(grid)
+    GridScreen(null)// grid)
 }

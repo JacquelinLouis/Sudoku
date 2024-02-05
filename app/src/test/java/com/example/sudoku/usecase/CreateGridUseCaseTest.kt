@@ -1,5 +1,6 @@
 package com.example.sudoku.usecase
 
+import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.repository.GridRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -17,7 +18,7 @@ class CreateGridUseCaseTest {
     private val date = Date(0)
 
     private val values = MutableList(9 * 9) { index ->
-        index % 9 + 1
+        index % GRID_LENGTH + 1
     }.run { joinToString(separator = "") }
 
     private val fixedValues = 0

@@ -1,5 +1,6 @@
 package com.example.sudoku.usecase
 
+import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.repository.GridRepository
 import com.example.sudoku.repository.source.room.GridDataEntity
 import io.mockk.every
@@ -14,8 +15,8 @@ class GetGridDataUseCaseTest {
 
     private val gridMetadataId = 0L
 
-    private val values = MutableList<List<Int>>(ARRAY_LENGTH) { y ->
-        MutableList(ARRAY_LENGTH) { x -> x }
+    private val values = MutableList<List<Int>>(GRID_LENGTH) { _ ->
+        MutableList(GRID_LENGTH) { x -> x }
     }
 
     private val expected = values.map { row -> row.map { Pair(it.toShort(), false) } }
@@ -39,7 +40,4 @@ class GetGridDataUseCaseTest {
         assertEquals(expected, result)
     }
 
-    private companion object {
-        const val ARRAY_LENGTH = 9
-    }
 }

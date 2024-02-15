@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.koin.compose.koinInject
+import java.lang.IllegalStateException
 
 @Composable
 fun GridListComposable(
@@ -24,11 +25,14 @@ fun GridListComposable(
 
     val state by viewModel.stateFlow.collectAsState(initial = GridListViewModel.State.Idle)
 
-    GridListScreen(
-        state = state,
-        onGridMetadataClick = onGridMetadataClick
-    ) {
-        viewModel.run(GridListViewModel.Action.Create)
+    when (val localState = state) {
+        is GridListViewModel.State.Created -> onGridMetadataClick(localState.gridMetadataId)
+        else -> GridListScreen(
+            state = localState,
+            onGridMetadataClick = onGridMetadataClick
+        ) {
+            viewModel.run(GridListViewModel.Action.Create)
+        }
     }
 }
 
@@ -42,6 +46,7 @@ private fun GridListScreen(
         when (state) {
             GridListViewModel.State.Idle -> Idle(Modifier.align(Alignment.Center))
             is GridListViewModel.State.Loaded -> Loaded(state, onGridMetadataClick)
+            else -> throw IllegalStateException("Unhandled state $state")
         }
          FloatingActionButton(
                 modifier = Modifier.padding(15.dp).align(Alignment.BottomEnd),

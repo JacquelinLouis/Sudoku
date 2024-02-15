@@ -6,7 +6,8 @@ import com.example.sudoku.repository.source.room.GridMetadataEntity
 import com.example.sudoku.usecase.CreateGridUseCase
 import com.example.sudoku.usecase.GetGridsMetadataUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class GridListViewModel(
@@ -14,19 +15,30 @@ class GridListViewModel(
     private val createGridUseCase: CreateGridUseCase
 ): ViewModel() {
 
-    interface State {
-        data object Idle: State
-        data class Loaded(val gridsMetadata: List<GridMetadataEntity>): State
+    sealed class State {
+        data object Idle: State()
+        data class Loaded(val gridsMetadata: List<GridMetadataEntity>): State()
+        data class Created(val gridMetadataId: Long): State()
     }
 
     interface Action {
         data object Create: Action
     }
 
-    val stateFlow = getGridsMetadataUseCase().map { State.Loaded(it) }
+    private val _createdFlow = MutableStateFlow<Long?>(null)
+
+    val stateFlow = combine(getGridsMetadataUseCase(), _createdFlow) { gridsMetadata, createdId ->
+        if (createdId != null)
+            State.Created(createdId)
+        else
+            State.Loaded(gridsMetadata)
+    }
 
     fun run(action: Action) {
         if (action is Action.Create)
-            viewModelScope.launch(Dispatchers.IO) { createGridUseCase() }
+            viewModelScope.launch(Dispatchers.IO) {
+                val gridMetadataId = createGridUseCase()
+                _createdFlow.emit(gridMetadataId)
+            }
     }
 }

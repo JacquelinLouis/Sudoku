@@ -1,12 +1,10 @@
 package com.example.sudoku.usecase
 
 import com.example.sudoku.repository.GridRepository
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
-import io.mockk.verify
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -33,7 +31,7 @@ class CreateGridUseCaseTest {
     )
 
     private val grid: Grid = gridValues.map { row ->
-        row.map { Pair(it, false) }
+        row.map { Digit(it, false) }
     }
 
     private val gridRepositoryValues = gridValues.joinToString("") { it.joinToString("") }
@@ -46,11 +44,11 @@ class CreateGridUseCaseTest {
         every { createGrid(date, gridRepositoryValues, fixedValues) }.returns(gridId)
     }
 
-    private val isValidGridUseCase = mockk<IsValidGridUseCase> {
-        every { this@mockk.invoke(grid) }.returns(true)
+    private val generateGridUseCase = mockk<GenerateGridUseCase> {
+        every { this@mockk.invoke() }.returns(grid)
     }
 
-    private val createGridUseCase = CreateGridUseCase(gridRepository, isValidGridUseCase)
+    private val createGridUseCase = CreateGridUseCase(gridRepository, generateGridUseCase)
 
     @Before
     fun before() {

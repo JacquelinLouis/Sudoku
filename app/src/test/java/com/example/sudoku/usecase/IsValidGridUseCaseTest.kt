@@ -2,7 +2,6 @@ package com.example.sudoku.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.Config.Companion.SUB_GRID_LENGTH
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
 
@@ -27,7 +26,7 @@ class IsValidGridUseCaseTest {
     private val List<List<Short>>.grid
         get() = map { row ->
             row.map { value ->
-                Pair(value, false)
+                Digit(value, false)
             }
         }
 
@@ -62,7 +61,7 @@ class IsValidGridUseCaseTest {
     }
 
     @Test
-    fun testInvalidSubGrid() {
+    fun testInvalidRegion() {
         val invalidGridValues = gridValues.toMutableList().apply {
             set(SUB_GRID_LENGTH - 1, get(SUB_GRID_LENGTH - 1).toMutableList().apply {
                 set(SUB_GRID_LENGTH - 1, 9)

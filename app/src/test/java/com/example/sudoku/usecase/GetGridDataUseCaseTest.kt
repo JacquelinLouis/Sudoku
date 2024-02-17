@@ -19,7 +19,7 @@ class GetGridDataUseCaseTest {
         MutableList(GRID_LENGTH) { x -> x }
     }
 
-    private val expected = values.map { row -> row.map { Pair(it.toShort(), false) } }
+    private val expected = values.map { row -> row.map { Digit(it.toShort(), false) } }
 
     private val gridDataEntity = GridDataEntity(
         gridMetadataId = 0L,

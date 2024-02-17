@@ -10,10 +10,10 @@ class GetGridDataUseCase(private val gridRepository: GridRepository) {
     operator fun invoke(gridMetadataId: Long): Flow<Grid> = gridRepository
         .getGridData(gridMetadataId)
         .map { gridDataEntity ->
-            mutableListOf<List<Pair<Short, Boolean>>>().apply {
+            mutableListOf<List<Digit>>().apply {
                 for (i in 0 until GRID_LENGTH) {
                     val row = gridDataEntity.values.substring(i * GRID_LENGTH until  (i + 1) * GRID_LENGTH)
-                    add(row.map { Pair(it.toString().toShort(), false) })
+                    add(row.map { Digit(it.toString().toShort(), false) })
                 }
             }
         }

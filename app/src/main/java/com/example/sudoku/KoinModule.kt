@@ -7,6 +7,7 @@ import com.example.sudoku.repository.GridRepository
 import com.example.sudoku.repository.inspect.InspectorBroadcastReceiver
 import com.example.sudoku.repository.source.room.AppDatabase
 import com.example.sudoku.usecase.CreateGridUseCase
+import com.example.sudoku.usecase.GenerateGridUseCase
 import com.example.sudoku.usecase.GetGridDataUseCase
 import com.example.sudoku.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.usecase.IsValidGridUseCase
@@ -34,6 +35,7 @@ class KoinModule {
             factoryOf(::CreateGridUseCase)
             factoryOf(::GetGridDataUseCase)
             factoryOf(::IsValidGridUseCase)
+            factoryOf(::GenerateGridUseCase)
 
             viewModelOf(::GridListViewModel)
             viewModelOf(::GridViewModel)

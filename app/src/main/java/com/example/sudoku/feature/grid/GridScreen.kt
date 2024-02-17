@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sudoku.usecase.Digit
 import com.example.sudoku.usecase.Grid
 import org.koin.compose.koinInject
 
@@ -72,7 +73,7 @@ private fun GridComponent(grid: Grid) {
                             onClick = { /*TODO*/ }
                         ) {
                             Text(
-                                text = column.first.toString(),
+                                text = column.value.takeIf { it != 0.toShort() }?.toString() ?: " ",
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .weight(1F)
@@ -92,8 +93,11 @@ private fun GridComponent(grid: Grid) {
 private fun Preview() {
     val grid = MutableList(9) { _ ->
             MutableList(9) { index ->
-                Pair((index % 10).toShort(), index % 3 == 0)
+                Digit(
+                    (index % 10).toShort(),
+                    index % 3 == 0
+                )
             }
         }
-    GridScreen(null)// grid)
+    GridScreen(grid)
 }

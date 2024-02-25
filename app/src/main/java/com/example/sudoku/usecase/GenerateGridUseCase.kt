@@ -63,7 +63,7 @@ class GenerateGridUseCase {
                 }
                 gridIndex.decrement()
             } else {
-                gridIndex.run { grid[x][y] = Digit(value.toShort(), false) }
+                gridIndex.run { grid[x][y] = Digit(value.toShort(), true) }
             }
         } while (gridIndex.increment())
 

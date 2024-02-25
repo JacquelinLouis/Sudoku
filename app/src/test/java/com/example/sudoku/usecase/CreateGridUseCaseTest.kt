@@ -30,15 +30,30 @@ class CreateGridUseCaseTest {
         listOf<Short>(2, 3, 4, 5, 6, 7, 8, 9, 1)
     )
 
-    private val grid: Grid = gridValues.map { row ->
-        row.map { Digit(it, false) }
+    private val removedDigitsGridValues = gridValues.mapIndexed { rowIndex, row ->
+        row.mapIndexed { digitIndex, digit ->
+            if (rowIndex % 4 == 0 && digitIndex % 3 == 0)
+                0
+            else
+                digit
+        }
     }
 
-    private val gridRepositoryValues = gridValues.joinToString("") { it.joinToString("") }
+    private fun List<List<Short>>.toGrid() = map { row ->
+        row.map { value -> Digit(value, value != 0.toShort()) }
+    }
+
+    private val grid: Grid = gridValues.toGrid()
+
+    private val removedDigitsGrid = removedDigitsGridValues.toGrid()
+
+    private val gridRepositoryValues = removedDigitsGridValues.joinToString("") { it.joinToString("") }
 
     private val fixedValues = 0
 
     private val gridId = 0L
+
+    private val removedDigits = 9
 
     private val gridRepository = mockk<GridRepository> {
         every { createGrid(date, gridRepositoryValues, fixedValues) }.returns(gridId)
@@ -48,7 +63,15 @@ class CreateGridUseCaseTest {
         every { this@mockk.invoke() }.returns(grid)
     }
 
-    private val createGridUseCase = CreateGridUseCase(gridRepository, generateGridUseCase)
+    private val removeDigitsUseCase = mockk<RemoveDigitsUseCase> {
+        every { this@mockk.invoke(grid, removedDigits) }.returns(removedDigitsGrid)
+    }
+
+    private val createGridUseCase = CreateGridUseCase(
+        gridRepository,
+        generateGridUseCase,
+        removeDigitsUseCase
+    )
 
     @Before
     fun before() {

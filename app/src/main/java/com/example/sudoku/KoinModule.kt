@@ -11,6 +11,7 @@ import com.example.sudoku.usecase.GenerateGridUseCase
 import com.example.sudoku.usecase.GetGridDataUseCase
 import com.example.sudoku.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.usecase.IsValidGridUseCase
+import com.example.sudoku.usecase.RemoveDigitsUseCase
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -36,6 +37,7 @@ class KoinModule {
             factoryOf(::GetGridDataUseCase)
             factoryOf(::IsValidGridUseCase)
             factoryOf(::GenerateGridUseCase)
+            factoryOf(::RemoveDigitsUseCase)
 
             viewModelOf(::GridListViewModel)
             viewModelOf(::GridViewModel)

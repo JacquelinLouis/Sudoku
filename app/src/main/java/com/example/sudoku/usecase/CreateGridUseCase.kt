@@ -18,7 +18,11 @@ class CreateGridUseCase(
                     digit.value
                 }.joinToString("")
             },
-            0
+            grid.joinToString("") { row ->
+                row.joinToString("") { digit ->
+                    if (digit.fixed) "1" else "0"
+                }
+            }
         )
     }
 

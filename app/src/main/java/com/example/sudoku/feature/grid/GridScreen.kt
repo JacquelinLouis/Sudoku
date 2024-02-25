@@ -74,6 +74,7 @@ private fun GridComponent(grid: Grid) {
                         ) {
                             Text(
                                 text = column.value.takeIf { it != 0.toShort() }?.toString() ?: " ",
+                                color = if (column.fixed) Color.Black else Color.LightGray,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .weight(1F)

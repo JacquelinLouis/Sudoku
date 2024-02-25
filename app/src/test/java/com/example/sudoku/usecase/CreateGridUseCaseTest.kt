@@ -49,7 +49,7 @@ class CreateGridUseCaseTest {
 
     private val gridRepositoryValues = removedDigitsGridValues.joinToString("") { it.joinToString("") }
 
-    private val fixedValues = 0
+    private val fixedValues = removedDigitsGrid.joinToString("") { row -> row.joinToString("") { digit -> if (digit.fixed) "1" else "0" } }
 
     private val gridId = 0L
 

@@ -10,7 +10,7 @@ class GridRepository(
     private val gridDao: GridDao
 ) {
 
-    fun createGrid(date: Date, values: String, fixedValues: Int): Long {
+    fun createGrid(date: Date, values: String, fixedValues: String): Long {
         val gridMetadataId = gridDao.insert(GridMetadataEntity(creation = date))
         gridDao.insert(GridDataEntity(
             gridMetadataId = gridMetadataId,

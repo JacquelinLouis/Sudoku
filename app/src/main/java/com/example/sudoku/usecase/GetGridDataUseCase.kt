@@ -12,8 +12,9 @@ class GetGridDataUseCase(private val gridRepository: GridRepository) {
         .map { gridDataEntity ->
             mutableListOf<List<Digit>>().apply {
                 for (i in 0 until GRID_LENGTH) {
-                    val row = gridDataEntity.values.substring(i * GRID_LENGTH until  (i + 1) * GRID_LENGTH)
-                    add(row.map { Digit(it.toString().toShort(), false) })
+                    val values = gridDataEntity.values.substring(i * GRID_LENGTH until  (i + 1) * GRID_LENGTH).map { it.toString().toShort() }
+                    val fixed = gridDataEntity.fixedValues.substring(i * GRID_LENGTH until  (i + 1) * GRID_LENGTH).map { it == '1' }
+                    add(values.mapIndexed { index, value -> Digit(value, fixed[index]) })
                 }
             }
         }

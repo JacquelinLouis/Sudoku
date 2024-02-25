@@ -19,5 +19,5 @@ data class GridDataEntity(
     @ColumnInfo(index = true)
     val gridMetadataId: Long,
     val values: String,
-    val fixedValues: Int,
+    val fixedValues: String,
 )

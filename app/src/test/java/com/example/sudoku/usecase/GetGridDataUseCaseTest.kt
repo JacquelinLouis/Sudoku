@@ -24,7 +24,7 @@ class GetGridDataUseCaseTest {
     private val gridDataEntity = GridDataEntity(
         gridMetadataId = 0L,
         values = values.joinToString("") { it.joinToString("") },
-        fixedValues = 0
+        fixedValues = values.joinToString("") { row -> row.joinToString("") { "0" } }
     )
 
     private val gridRepository = mockk<GridRepository> {

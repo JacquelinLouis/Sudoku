@@ -25,7 +25,7 @@ class GridRepositoryTest {
     fun testCreateGridInsertGridMetadataEntity() {
         val date = Date(0)
 
-        gridRepository.createGrid(date, "1234", 0)
+        gridRepository.createGrid(date, "1234", "0101")
 
         verify { gridDao.insert(GridMetadataEntity(0L, date)) }
     }
@@ -34,7 +34,7 @@ class GridRepositoryTest {
     fun testCreateGridInsertGridDataEntity() {
         val date = Date(0)
         val values = "1234"
-        val fixedValues = 0
+        val fixedValues = "0101"
         val gridMetadataId = 1L
         every { gridDao.insert(GridMetadataEntity(creation = date)) }.returns(gridMetadataId)
 
@@ -47,7 +47,7 @@ class GridRepositoryTest {
     fun testCreateGridReturnGridMetadataId() {
         val date = Date(0)
         val values = "1234"
-        val fixedValues = 0
+        val fixedValues = "0101"
         val gridMetadataId = 1L
         every { gridDao.insert(GridMetadataEntity(creation = date)) }.returns(gridMetadataId)
 
@@ -69,7 +69,7 @@ class GridRepositoryTest {
     @Test
     fun testGetGridData() {
         val gridMetadataId = 3L
-        val gridsData = flowOf(GridDataEntity(0L, gridMetadataId, "1234", 1))
+        val gridsData = flowOf(GridDataEntity(0L, gridMetadataId, "1234", "0101"))
         every { gridDao.get(gridMetadataId) }.returns(gridsData)
 
         val result = gridRepository.getGridData(gridMetadataId)
@@ -81,7 +81,7 @@ class GridRepositoryTest {
     @Test
     fun testUpdateGrid() {
         val gridMetadataId = 3L
-        val gridDataEntity = GridDataEntity(0L, gridMetadataId, "1234", 1)
+        val gridDataEntity = GridDataEntity(0L, gridMetadataId, "1234", "0101")
         val updatedGridDataEntity = gridDataEntity.copy(values = "5678")
         every { gridDao.get(gridMetadataId) }.returns(flowOf(gridDataEntity))
 

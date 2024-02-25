@@ -63,7 +63,7 @@ class GridDaoTest {
     @Test
     fun testGridDataEntityInsert() {
         val gridMetadataEntity = GridMetadataEntity(1L, Date(1234))
-        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", 0)
+        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", "")
         gridDao.insert(gridMetadataEntity)
         gridDao.insert(gridDataEntity)
 
@@ -75,8 +75,8 @@ class GridDaoTest {
     @Test
     fun testGridDataEntityUpdate() {
         val gridMetadataEntity = GridMetadataEntity(1L, Date(1234))
-        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", 0)
-        val updatedGridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "1234", 3)
+        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", "")
+        val updatedGridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "1234", "0101")
         gridDao.insert(gridMetadataEntity)
         gridDao.insert(gridDataEntity)
         gridDao.update(updatedGridDataEntity)
@@ -89,7 +89,7 @@ class GridDaoTest {
     @Test
     fun testGridDataEntityDelete() {
         val gridMetadataEntity = GridMetadataEntity(1L, Date(1234))
-        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", 0)
+        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", "")
         gridDao.insert(gridMetadataEntity)
         gridDao.insert(gridDataEntity)
         gridDao.delete(gridDataEntity)
@@ -102,7 +102,7 @@ class GridDaoTest {
     @Test
     fun testGridDataEntityDeleteCascade() {
         val gridMetadataEntity = GridMetadataEntity(1L, Date(1234))
-        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", 0)
+        val gridDataEntity = GridDataEntity(1L, gridMetadataEntity.gridMetadataId, "", "")
         gridDao.insert(gridMetadataEntity)
         gridDao.insert(gridDataEntity)
         gridDao.delete(gridMetadataEntity)

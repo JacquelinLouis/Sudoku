@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.sudoku.domain.usecase.Digit
-import com.example.sudoku.domain.usecase.Grid
+import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.Grid
 import org.koin.compose.koinInject
 
 @Composable

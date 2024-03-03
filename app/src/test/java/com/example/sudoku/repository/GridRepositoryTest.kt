@@ -1,9 +1,11 @@
 package com.example.sudoku.repository
 
+import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.GridData
+import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.repository.source.room.GridDao
 import com.example.sudoku.repository.source.room.GridDataEntity
 import com.example.sudoku.repository.source.room.GridMetadataEntity
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -21,11 +23,27 @@ class GridRepositoryTest {
 
     private val gridRepository = GridRepository(gridDao)
 
+    private val digits = MutableList(9) { _ ->
+        MutableList(9) { columnIndex -> Digit(columnIndex, columnIndex % 3 == 0) }
+    }
+
+    private val values = digits.joinToString("") { row ->
+        row.joinToString("") { digit ->
+            digit.value.toString()
+        }
+    }
+
+    private val fixedValues = digits.joinToString("") { row ->
+        row.joinToString("") { digit ->
+            if (digit.fixed) "1" else "0"
+        }
+    }
+
     @Test
     fun testCreateGridInsertGridMetadataEntity() {
         val date = Date(0)
 
-        gridRepository.createGrid(date, "1234", "0101")
+        gridRepository.createGrid(date, digits)
 
         verify { gridDao.insert(GridMetadataEntity(0L, date)) }
     }
@@ -33,12 +51,10 @@ class GridRepositoryTest {
     @Test
     fun testCreateGridInsertGridDataEntity() {
         val date = Date(0)
-        val values = "1234"
-        val fixedValues = "0101"
         val gridMetadataId = 1L
         every { gridDao.insert(GridMetadataEntity(creation = date)) }.returns(gridMetadataId)
 
-        gridRepository.createGrid(Date(0), values, fixedValues)
+        gridRepository.createGrid(Date(0), digits)
 
         verify { gridDao.insert(GridDataEntity(0L, gridMetadataId, values, fixedValues)) }
     }
@@ -46,12 +62,10 @@ class GridRepositoryTest {
     @Test
     fun testCreateGridReturnGridMetadataId() {
         val date = Date(0)
-        val values = "1234"
-        val fixedValues = "0101"
         val gridMetadataId = 1L
         every { gridDao.insert(GridMetadataEntity(creation = date)) }.returns(gridMetadataId)
 
-        val result = gridRepository.createGrid(Date(0), values, fixedValues)
+        val result = gridRepository.createGrid(Date(0), digits)
 
         assertEquals(gridMetadataId, result)
     }
@@ -60,32 +74,37 @@ class GridRepositoryTest {
     fun testGetGridsMetadata() {
         val gridsMetadata = flowOf(listOf(GridMetadataEntity(creation = Date(0))))
         every { gridDao.get() }.returns(gridsMetadata)
+        val expected = listOf(GridMetadata(0, Date(0)))
 
-        val result = gridRepository.getGridsMetadata()
+        val result = runBlocking { gridRepository.getGridsMetadata().first() }
 
-        assertEquals(gridsMetadata, result)
+        assertEquals(expected, result)
     }
 
     @Test
     fun testGetGridData() {
         val gridMetadataId = 3L
-        val gridsData = flowOf(GridDataEntity(0L, gridMetadataId, "1234", "0101"))
-        every { gridDao.get(gridMetadataId) }.returns(gridsData)
+        val gridDataEntity = GridDataEntity(0L, gridMetadataId, values, fixedValues)
+        val gridsDataFlow = flowOf(gridDataEntity)
+        val expected = GridData(
+            id = gridDataEntity.gridDataId,
+            digits = digits
+        )
+        every { gridDao.get(gridMetadataId) }.returns(gridsDataFlow)
 
-        val result = gridRepository.getGridData(gridMetadataId)
+        val result = runBlocking { gridRepository.getGridData(gridMetadataId).first() }
 
-        assertEquals(gridsData, result)
+        assertEquals(expected, result)
 
     }
 
     @Test
     fun testUpdateGrid() {
-        val gridMetadataId = 3L
-        val gridDataEntity = GridDataEntity(0L, gridMetadataId, "1234", "0101")
-        val updatedGridDataEntity = gridDataEntity.copy(values = "5678")
-        every { gridDao.get(gridMetadataId) }.returns(flowOf(gridDataEntity))
+        val gridDataEntity = GridDataEntity(0L, 3L, values, fixedValues)
+        val updatedGridDataEntity = gridDataEntity.copy(values = values.replace("1", "2"))
+        every { gridDao.get(gridDataEntity.gridDataId) }.returns(flowOf(gridDataEntity))
 
-        runBlocking { gridRepository.updateGrid(gridMetadataId, updatedGridDataEntity.values) }
+        runBlocking { gridRepository.updateGrid(gridDataEntity.gridDataId, updatedGridDataEntity.values) }
 
         coVerify { gridDao.update(updatedGridDataEntity) }
     }

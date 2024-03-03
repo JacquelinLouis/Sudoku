@@ -2,6 +2,8 @@ package com.example.sudoku.domain.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.Config.Companion.GRID_SIZE
+import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.Grid
 import kotlin.random.Random
 
 class RemoveDigitsUseCase {

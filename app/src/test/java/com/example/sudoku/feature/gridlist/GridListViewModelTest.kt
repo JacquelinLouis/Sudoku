@@ -1,5 +1,6 @@
 package com.example.sudoku.feature.gridlist
 
+import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.repository.source.room.GridMetadataEntity
 import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
@@ -25,7 +26,7 @@ class GridListViewModelTest {
 
     @Test
     fun testLoadedState() {
-        val list = emptyList<GridMetadataEntity>()
+        val list = emptyList<GridMetadata>()
         every { getGridsMetadataUseCase() }.returns(flowOf(list))
 
         val state = runBlocking { gridViewModel.stateFlow.first() }

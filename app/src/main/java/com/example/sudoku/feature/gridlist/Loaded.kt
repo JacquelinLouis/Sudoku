@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.sudoku.repository.source.room.GridMetadataEntity
+import com.example.sudoku.domain.data.GridMetadata
 import java.util.Date
 
 @Composable
@@ -24,7 +24,7 @@ fun Loaded(
     else
         LazyColumn {
             itemsIndexed(gridsMetadata) { index, gridMetadataEntity ->
-                Button(onClick = { onGridMetadataClick(gridMetadataEntity.gridMetadataId) }) {
+                Button(onClick = { onGridMetadataClick(gridMetadataEntity.id) }) {
                     Text(text = "${gridMetadataEntity.creation.time}")
                 }
                 if (index < gridsMetadata.lastIndex) {
@@ -38,7 +38,7 @@ fun Loaded(
 @Composable
 private fun Preview() {
     val loaded = GridListViewModel.State.Loaded(
-        MutableList(3) { index -> GridMetadataEntity(index.toLong(), Date(index.toLong())) }
+        MutableList(3) { index -> GridMetadata(index.toLong(), Date(index.toLong())) }
     )
     Loaded(loaded = loaded, onGridMetadataClick = {})
 }

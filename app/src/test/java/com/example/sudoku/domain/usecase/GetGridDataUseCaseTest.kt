@@ -1,8 +1,9 @@
 package com.example.sudoku.domain.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
+import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.GridData
 import com.example.sudoku.repository.GridRepository
-import com.example.sudoku.repository.source.room.GridDataEntity
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
@@ -21,14 +22,13 @@ class GetGridDataUseCaseTest {
 
     private val expected = values.map { row -> row.map { Digit(it, false) } }
 
-    private val gridDataEntity = GridDataEntity(
-        gridMetadataId = 0L,
-        values = values.joinToString("") { it.joinToString("") },
-        fixedValues = values.joinToString("") { row -> row.joinToString("") { "0" } }
+    private val gridData = GridData(
+        id = 0L,
+        digits = expected
     )
 
     private val gridRepository = mockk<GridRepository> {
-        every { getGridData(gridMetadataId) }.returns(flowOf(gridDataEntity))
+        every { getGridData(gridMetadataId) }.returns(flowOf(gridData))
     }
 
     private val getGridDataUseCase = GetGridDataUseCase(gridRepository)

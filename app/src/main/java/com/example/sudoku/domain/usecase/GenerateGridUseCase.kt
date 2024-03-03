@@ -2,6 +2,9 @@ package com.example.sudoku.domain.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.Config.Companion.GRID_SIZE
+import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.Grid
+import com.example.sudoku.domain.data.isValid
 
 class GenerateGridUseCase {
 
@@ -43,7 +46,7 @@ class GenerateGridUseCase {
     operator fun invoke(): Grid {
         val grid = MutableList(GRID_LENGTH) {
             MutableList(GRID_LENGTH) {
-                Digit()
+                Digit(0, true)
             }
         }
 
@@ -59,7 +62,7 @@ class GenerateGridUseCase {
                 gridIndex.decrement()
                 gridIndex.run {
                     possibleGridValues[index].apply { remove(grid[x][y].value) }
-                    grid[x][y] = Digit()
+                    grid[x][y] = Digit(0, true)
                 }
                 gridIndex.decrement()
             } else {

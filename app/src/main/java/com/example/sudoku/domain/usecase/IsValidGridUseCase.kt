@@ -1,5 +1,8 @@
 package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.data.Grid
+import com.example.sudoku.domain.data.isValid
+
 class IsValidGridUseCase {
 
     operator fun invoke(grid: Grid): Boolean {

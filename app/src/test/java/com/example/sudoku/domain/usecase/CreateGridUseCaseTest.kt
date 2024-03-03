@@ -1,5 +1,7 @@
 package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.Grid
 import com.example.sudoku.repository.GridRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -47,16 +49,12 @@ class CreateGridUseCaseTest {
 
     private val removedDigitsGrid = removedDigitsGridValues.toGrid()
 
-    private val gridRepositoryValues = removedDigitsGridValues.joinToString("") { it.joinToString("") }
-
-    private val fixedValues = removedDigitsGrid.joinToString("") { row -> row.joinToString("") { digit -> if (digit.fixed) "1" else "0" } }
-
     private val gridId = 0L
 
     private val removedDigits = 9
 
     private val gridRepository = mockk<GridRepository> {
-        every { createGrid(date, gridRepositoryValues, fixedValues) }.returns(gridId)
+        every { createGrid(date, removedDigitsGrid) }.returns(gridId)
     }
 
     private val generateGridUseCase = mockk<GenerateGridUseCase> {

@@ -1,5 +1,6 @@
 package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.data.toPrettyString
 import org.junit.Test
 
 class GenerateGridUseCaseTest {

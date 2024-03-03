@@ -1,7 +1,7 @@
 package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.repository.GridRepository
-import com.example.sudoku.repository.source.room.GridMetadataEntity
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +10,7 @@ import org.junit.Test
 
 class GetGridsMetadataUseCaseTest {
 
-    private val gridMetadata = mockk<Flow<List<GridMetadataEntity>>>()
+    private val gridMetadata = mockk<Flow<List<GridMetadata>>>()
 
     private val gridRepository = mockk<GridRepository> {
         every { getGridsMetadata() }.returns(gridMetadata)

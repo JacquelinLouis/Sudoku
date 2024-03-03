@@ -13,16 +13,7 @@ class CreateGridUseCase(
         .let { grid ->
         gridRepository.createGrid(
             Calendar.getInstance().time,
-            values = grid.joinToString("") { row ->
-                row.map { digit ->
-                    digit.value
-                }.joinToString("")
-            },
-            grid.joinToString("") { row ->
-                row.joinToString("") { digit ->
-                    if (digit.fixed) "1" else "0"
-                }
-            }
+            grid
         )
     }
 

@@ -35,8 +35,11 @@ class InspectorBroadcastReceiver(
             if (dump == GRIDS)
                 gridRepository.getGridsMetadata().first().onEach { gridMetadataEntity ->
                     Log.d(this@InspectorBroadcastReceiver::class.simpleName, gridMetadataEntity.toString())
-                    val grid = gridRepository.getGridData(gridMetadataEntity.gridMetadataId)
-                    Log.d(this@InspectorBroadcastReceiver::class.simpleName, grid.first().values)
+                    val grid = gridRepository.getGridData(gridMetadataEntity.id)
+                    Log.d(
+                        this@InspectorBroadcastReceiver::class.simpleName,
+                        grid.first().digits.joinToString { it.joinToString() }
+                    )
                 }
         }
     }

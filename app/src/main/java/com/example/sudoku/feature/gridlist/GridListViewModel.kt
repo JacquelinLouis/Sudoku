@@ -2,6 +2,7 @@ package com.example.sudoku.feature.gridlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.repository.source.room.GridMetadataEntity
 import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
@@ -17,7 +18,7 @@ class GridListViewModel(
 
     sealed class State {
         data object Idle: State()
-        data class Loaded(val gridsMetadata: List<GridMetadataEntity>): State()
+        data class Loaded(val gridsMetadata: List<GridMetadata>): State()
         data class Created(val gridMetadataId: Long): State()
     }
 

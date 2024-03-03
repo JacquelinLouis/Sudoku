@@ -1,4 +1,4 @@
-package com.example.sudoku.usecase
+package com.example.sudoku.domain.usecase
 
 class IsValidGridUseCase {
 

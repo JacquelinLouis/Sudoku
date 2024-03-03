@@ -1,5 +1,10 @@
-package com.example.sudoku.usecase
+package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.usecase.CreateGridUseCase
+import com.example.sudoku.domain.usecase.Digit
+import com.example.sudoku.domain.usecase.GenerateGridUseCase
+import com.example.sudoku.domain.usecase.Grid
+import com.example.sudoku.domain.usecase.RemoveDigitsUseCase
 import com.example.sudoku.repository.GridRepository
 import io.mockk.every
 import io.mockk.mockk

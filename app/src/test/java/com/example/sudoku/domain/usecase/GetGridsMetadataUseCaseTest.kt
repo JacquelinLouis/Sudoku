@@ -1,5 +1,6 @@
-package com.example.sudoku.usecase
+package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.repository.GridRepository
 import com.example.sudoku.repository.source.room.GridMetadataEntity
 import io.mockk.every

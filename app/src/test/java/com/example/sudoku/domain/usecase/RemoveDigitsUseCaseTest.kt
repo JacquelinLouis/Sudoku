@@ -1,5 +1,7 @@
-package com.example.sudoku.usecase
+package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.usecase.GenerateGridUseCase
+import com.example.sudoku.domain.usecase.RemoveDigitsUseCase
 import org.junit.Test
 import kotlin.test.assertEquals
 

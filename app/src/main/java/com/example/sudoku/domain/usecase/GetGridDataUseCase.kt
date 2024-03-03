@@ -1,4 +1,4 @@
-package com.example.sudoku.usecase
+package com.example.sudoku.domain.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.repository.GridRepository

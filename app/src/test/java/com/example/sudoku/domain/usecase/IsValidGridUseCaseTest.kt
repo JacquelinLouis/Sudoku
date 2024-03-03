@@ -1,7 +1,9 @@
-package com.example.sudoku.usecase
+package com.example.sudoku.domain.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.Config.Companion.SUB_GRID_LENGTH
+import com.example.sudoku.domain.usecase.Digit
+import com.example.sudoku.domain.usecase.IsValidGridUseCase
 import org.junit.Assert.assertFalse
 import org.junit.Test
 

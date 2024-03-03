@@ -1,8 +1,8 @@
 package com.example.sudoku.feature.gridlist
 
 import com.example.sudoku.repository.source.room.GridMetadataEntity
-import com.example.sudoku.usecase.CreateGridUseCase
-import com.example.sudoku.usecase.GetGridsMetadataUseCase
+import com.example.sudoku.domain.usecase.CreateGridUseCase
+import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first

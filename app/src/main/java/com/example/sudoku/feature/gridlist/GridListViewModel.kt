@@ -3,8 +3,8 @@ package com.example.sudoku.feature.gridlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sudoku.repository.source.room.GridMetadataEntity
-import com.example.sudoku.usecase.CreateGridUseCase
-import com.example.sudoku.usecase.GetGridsMetadataUseCase
+import com.example.sudoku.domain.usecase.CreateGridUseCase
+import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine

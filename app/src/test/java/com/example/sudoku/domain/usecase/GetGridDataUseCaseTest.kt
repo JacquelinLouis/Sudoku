@@ -1,8 +1,6 @@
 package com.example.sudoku.domain.usecase
 
 import com.example.sudoku.Config.Companion.GRID_LENGTH
-import com.example.sudoku.domain.usecase.Digit
-import com.example.sudoku.domain.usecase.GetGridDataUseCase
 import com.example.sudoku.repository.GridRepository
 import com.example.sudoku.repository.source.room.GridDataEntity
 import io.mockk.every
@@ -21,7 +19,7 @@ class GetGridDataUseCaseTest {
         MutableList(GRID_LENGTH) { x -> x }
     }
 
-    private val expected = values.map { row -> row.map { Digit(it.toShort(), false) } }
+    private val expected = values.map { row -> row.map { Digit(it, false) } }
 
     private val gridDataEntity = GridDataEntity(
         gridMetadataId = 0L,

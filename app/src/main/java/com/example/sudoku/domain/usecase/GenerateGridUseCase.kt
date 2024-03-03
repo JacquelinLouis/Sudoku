@@ -58,12 +58,12 @@ class GenerateGridUseCase {
                 possibleGridValues[gridIndex.index] = VALUES.toMutableList()
                 gridIndex.decrement()
                 gridIndex.run {
-                    possibleGridValues[index].apply { remove(grid[x][y].value.toInt()) }
+                    possibleGridValues[index].apply { remove(grid[x][y].value) }
                     grid[x][y] = Digit()
                 }
                 gridIndex.decrement()
             } else {
-                gridIndex.run { grid[x][y] = Digit(value.toShort(), true) }
+                gridIndex.run { grid[x][y] = Digit(value, true) }
             }
         } while (gridIndex.increment())
 

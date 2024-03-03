@@ -73,7 +73,7 @@ private fun GridComponent(grid: Grid) {
                             onClick = { /*TODO*/ }
                         ) {
                             Text(
-                                text = column.value.takeIf { it != 0.toShort() }?.toString() ?: " ",
+                                text = column.value.takeIf { it != 0 }?.toString() ?: " ",
                                 color = if (column.fixed) Color.Black else Color.LightGray,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
@@ -95,7 +95,7 @@ private fun Preview() {
     val grid = MutableList(9) { _ ->
             MutableList(9) { index ->
                 Digit(
-                    (index % 10).toShort(),
+                    index % 10,
                     index % 3 == 0
                 )
             }

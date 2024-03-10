@@ -6,7 +6,7 @@ import com.example.sudoku.domain.data.Digit
 import com.example.sudoku.domain.data.Grid
 import com.example.sudoku.domain.data.isValid
 
-class GenerateGridUseCase {
+class GenerateGridUseCase(val generatePossibleValues: GeneratePossibleValues) {
 
     private class GridIndex {
         private var _y: Int = 0
@@ -50,7 +50,7 @@ class GenerateGridUseCase {
             }
         }
 
-        val possibleGridValues = MutableList(GRID_SIZE) { VALUES.toMutableList() }
+        val possibleGridValues = MutableList(GRID_SIZE) { generatePossibleValues() }
         val gridIndex = GridIndex()
 
         do {

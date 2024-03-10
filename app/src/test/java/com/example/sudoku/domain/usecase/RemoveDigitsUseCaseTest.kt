@@ -1,5 +1,6 @@
 package com.example.sudoku.domain.usecase
 
+import com.example.sudoku.domain.data.Digit
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -10,7 +11,11 @@ class RemoveDigitsUseCaseTest {
     @Test
     fun testInvoke() {
         val expectedRemovedDigits = 9
-        val generatedGrid = GenerateGridUseCase().invoke()
+        val generatedGrid = MutableList(9) { _ ->
+            MutableList(9) { column ->
+                Digit(column + 1, false)
+            }
+        }
 
         val grid = removeDigitsUseCase(generatedGrid, expectedRemovedDigits)
 

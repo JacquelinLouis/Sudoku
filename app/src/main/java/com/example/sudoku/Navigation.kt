@@ -2,7 +2,10 @@ package com.example.sudoku
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
+import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +16,16 @@ import com.example.sudoku.feature.gridlist.GridListComposable
 class Navigation {
 
     companion object {
+
+        private fun NavHostController.navigateOnce(route: String,
+                                                   navOptions: NavOptions? = null,
+                                                   navigatorExtras: Navigator.Extras? = null
+        ) {
+            if (currentDestination?.route != route) {
+                navigate(route, navOptions, navigatorExtras)
+            }
+        }
+
         @Composable
         fun AppNavHost() {
             val navController = rememberNavController()
@@ -22,7 +35,9 @@ class Navigation {
                 startDestination = GRID_LIST
             ) {
                 composable(GRID_LIST) {
-                    GridListComposable { gridMetadataId -> navController.navigate("$GRID/$gridMetadataId") }
+                    GridListComposable { gridMetadataId ->
+                        navController.navigateOnce("$GRID/$gridMetadataId")
+                    }
                 }
                 composable(
                     route = "$GRID/{$GRID_METADATA_ID_ARG}",

@@ -8,6 +8,7 @@ import com.example.sudoku.feature.CoroutineScopeProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class GridListViewModel(
@@ -29,11 +30,11 @@ class GridListViewModel(
     private val _createdFlow = MutableStateFlow<Long?>(null)
 
     val stateFlow = combine(getGridsMetadataUseCase(), _createdFlow) { gridsMetadata, createdId ->
-        if (createdId != null)
+        if (createdId != null && gridsMetadata.any { it.id == createdId })
             State.Created(createdId)
         else
             State.Loaded(gridsMetadata)
-    }
+    }.distinctUntilChanged()
 
     fun run(action: Action) {
         if (action is Action.Create)

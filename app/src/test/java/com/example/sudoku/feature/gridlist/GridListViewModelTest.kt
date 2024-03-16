@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import java.util.Date
 import kotlin.test.assertEquals
 
 class GridListViewModelTest {
@@ -38,7 +39,8 @@ class GridListViewModelTest {
     @Test
     fun testCreatedState() {
         val createdId = 0L
-        every { getGridsMetadataUseCase() }.returns(flowOf(emptyList()))
+        every { getGridsMetadataUseCase() }
+            .returns(flowOf(listOf(GridMetadata(createdId, Date(0)))))
         every { createGridUseCase() }.returns(createdId)
 
 

@@ -11,6 +11,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,9 +27,15 @@ fun GridListComposable(
     onGridMetadataClick: (Long)->Unit) {
 
     val state by viewModel.stateFlow.collectAsState(initial = GridListViewModel.State.Idle)
+    // Ugly workaround to avoid navigating twice on recomposition
+    var created by remember { mutableStateOf(false) }
 
     when (val localState = state) {
-        is GridListViewModel.State.Created -> onGridMetadataClick(localState.gridMetadataId)
+        is GridListViewModel.State.Created -> {
+            if (!created)
+                onGridMetadataClick(localState.gridMetadataId)
+            created = true
+        }
         else -> GridListScreen(
             state = localState,
             onGridMetadataClick = onGridMetadataClick
@@ -49,7 +58,9 @@ private fun GridListScreen(
             else -> throw IllegalStateException("Unhandled state $state")
         }
          FloatingActionButton(
-                modifier = Modifier.padding(15.dp).align(Alignment.BottomEnd),
+                modifier = Modifier
+                    .padding(15.dp)
+                    .align(Alignment.BottomEnd),
                 shape = CircleShape,
                 onClick = { onCreateClick() }
             ) {

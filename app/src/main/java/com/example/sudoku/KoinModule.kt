@@ -13,6 +13,7 @@ import com.example.sudoku.domain.usecase.GetGridDataUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.domain.usecase.IsValidGridUseCase
 import com.example.sudoku.domain.usecase.RemoveDigitsUseCase
+import com.example.sudoku.feature.CoroutineScopeProvider
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -43,6 +44,8 @@ class KoinModule {
 
             viewModelOf(::GridListViewModel)
             viewModelOf(::GridViewModel)
+
+            factory { CoroutineScopeProvider() }
         }
 
     }

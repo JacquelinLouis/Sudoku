@@ -1,11 +1,10 @@
 package com.example.sudoku.feature.gridlist
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.sudoku.domain.data.GridMetadata
-import com.example.sudoku.repository.source.room.GridMetadataEntity
 import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
+import com.example.sudoku.feature.CoroutineScopeProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -13,7 +12,8 @@ import kotlinx.coroutines.launch
 
 class GridListViewModel(
     getGridsMetadataUseCase: GetGridsMetadataUseCase,
-    private val createGridUseCase: CreateGridUseCase
+    private val createGridUseCase: CreateGridUseCase,
+    private val coroutineScopeProvider: CoroutineScopeProvider
 ): ViewModel() {
 
     sealed class State {
@@ -37,7 +37,7 @@ class GridListViewModel(
 
     fun run(action: Action) {
         if (action is Action.Create)
-            viewModelScope.launch(Dispatchers.IO) {
+            coroutineScopeProvider.getViewModelScope(this).launch(Dispatchers.IO) {
                 val gridMetadataId = createGridUseCase()
                 _createdFlow.emit(gridMetadataId)
             }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sudoku.domain.data.Digit
@@ -42,11 +39,13 @@ fun GridComposable(
 ) {
     val grid by viewModel.getGrid(gridMetadataId).collectAsState(initial = null)
 
-    GridScreen(grid = grid)
+    GridScreen(grid = grid) { newGrid ->
+        viewModel.run(GridViewModel.Action.UpdateGrid(gridMetadataId, newGrid))
+    }
 }
 
 @Composable
-fun GridScreen(grid: Grid?) {
+fun GridScreen(grid: Grid?, onGridChanged: (Grid) -> Unit) {
     if (grid == null)
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
@@ -55,7 +54,7 @@ fun GridScreen(grid: Grid?) {
             )
         }
     else
-        GridComponent(grid)
+        GridComponent(grid, onGridChanged)
 }
 
 private val DECIMALS = MutableList(9) { index -> (index + 1).toString() }
@@ -64,7 +63,10 @@ private fun String.filterDecimal(): String = takeIf { DECIMALS.contains(it) } ?:
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GridComponent(grid: Grid) {
+private fun GridComponent(
+    grid: Grid,
+    onGridChanged: (Grid) -> Unit
+) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -85,7 +87,16 @@ private fun GridComponent(grid: Grid) {
 
                         TextField(
                             value = text,
-                            onValueChange = { text = it.filterDecimal() },
+                            onValueChange = {
+                                text = it.filterDecimal()
+                                val newRow = row.toMutableList().apply {
+                                    set(columnIndex, Digit(text.toInt(), false))
+                                }
+                                val newGrid = grid.toMutableList().apply {
+                                    set(rowIndex, newRow)
+                                }
+                                onGridChanged(newGrid)
+                            },
                             enabled = !column.fixed,
                             readOnly = column.fixed,
                             modifier = Modifier.weight(1F).fillMaxWidth(),
@@ -114,5 +125,5 @@ private fun Preview() {
                 )
             }
         }
-    GridScreen(grid)
+    GridScreen(grid) {}
 }

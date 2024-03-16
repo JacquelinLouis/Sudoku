@@ -101,10 +101,15 @@ class GridRepositoryTest {
     @Test
     fun testUpdateGrid() {
         val gridDataEntity = GridDataEntity(0L, 3L, values, fixedValues)
+        val updatedGrid = digits.map { row ->
+            row.map { digit ->
+                Digit(digit.value.takeIf { it != 1 } ?: 2, digit.fixed)
+            }
+        }
         val updatedGridDataEntity = gridDataEntity.copy(values = values.replace("1", "2"))
         every { gridDao.get(gridDataEntity.gridDataId) }.returns(flowOf(gridDataEntity))
 
-        runBlocking { gridRepository.updateGrid(gridDataEntity.gridDataId, updatedGridDataEntity.values) }
+        runBlocking { gridRepository.updateGrid(gridDataEntity.gridDataId, updatedGrid) }
 
         coVerify { gridDao.update(updatedGridDataEntity) }
     }

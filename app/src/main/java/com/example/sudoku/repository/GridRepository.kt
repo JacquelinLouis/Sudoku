@@ -2,6 +2,7 @@ package com.example.sudoku.repository
 
 import com.example.sudoku.Config
 import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.data.Grid
 import com.example.sudoku.domain.data.GridData
 import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.repository.source.room.GridDao
@@ -62,8 +63,11 @@ class GridRepository(
         )
     }
 
-    suspend fun updateGrid(gridDataId: Long, values: String) {
-        gridDao.update(gridDao.get(gridDataId).first { it.gridDataId == gridDataId }.copy(values = values))
+    suspend fun updateGrid(gridMetadataId: Long, grid: Grid) {
+        val values = grid.joinToString("") { row ->
+            row.joinToString("") { it.value.toString() }
+        }
+        gridDao.update(gridDao.get(gridMetadataId).first().copy(values = values))
     }
 
     suspend fun deleteGrid(gridMetadataId: Long) {

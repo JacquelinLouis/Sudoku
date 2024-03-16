@@ -61,6 +61,16 @@ private val DECIMALS = MutableList(9) { index -> (index + 1).toString() }
 
 private fun String.filterDecimal(): String = takeIf { DECIMALS.contains(it) } ?: ""
 
+private fun Grid.set(newValue: Int, rowIndex: Int, columnIndex: Int): Grid {
+    val newRow = get(rowIndex).toMutableList().apply {
+        set(columnIndex, Digit(newValue, false))
+    }
+    val newGrid = toMutableList().apply {
+        set(rowIndex, newRow)
+    }
+    return newGrid
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GridComponent(
@@ -89,13 +99,9 @@ private fun GridComponent(
                             value = text,
                             onValueChange = {
                                 text = it.filterDecimal()
-                                val newRow = row.toMutableList().apply {
-                                    set(columnIndex, Digit(text.toInt(), false))
+                                text.toIntOrNull()?.let { newValue ->
+                                    onGridChanged(grid.set(newValue, rowIndex, columnIndex))
                                 }
-                                val newGrid = grid.toMutableList().apply {
-                                    set(rowIndex, newRow)
-                                }
-                                onGridChanged(newGrid)
                             },
                             enabled = !column.fixed,
                             readOnly = column.fixed,

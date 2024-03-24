@@ -1,7 +1,6 @@
 package com.example.sudoku.feature.grid
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.sudoku.domain.data.Grid
 import com.example.sudoku.domain.usecase.GetGridDataUseCase
 import com.example.sudoku.domain.usecase.UpdateGridDataUseCase

@@ -11,6 +11,7 @@ import com.example.sudoku.domain.usecase.GenerateGridUseCase
 import com.example.sudoku.domain.usecase.GeneratePossibleValues
 import com.example.sudoku.domain.usecase.GetGridDataUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
+import com.example.sudoku.domain.usecase.IsCompleteGridUseCase
 import com.example.sudoku.domain.usecase.IsValidGridUseCase
 import com.example.sudoku.domain.usecase.IsValidGridValueUseCase
 import com.example.sudoku.domain.usecase.RemoveDigitsUseCase
@@ -44,6 +45,7 @@ class KoinModule {
             factoryOf(::RemoveDigitsUseCase)
             factoryOf(::GeneratePossibleValues)
             factoryOf(::UpdateGridDataUseCase)
+            factoryOf(::IsCompleteGridUseCase)
             factoryOf(::IsValidGridValueUseCase)
 
             viewModelOf(::GridListViewModel)

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sudoku</string>
+    <string name="grid_completed_title">Grid completed !</string>
+    <string name="grid_completed_text">
+        Congratulation, you have completed the grid !\n
+        Let\'s try an other one
+    </string>
+    <string name="dismiss">Dismiss</string>
 </resources>

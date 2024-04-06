@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,10 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sudoku.R
 import com.example.sudoku.domain.data.Digit
 import com.example.sudoku.domain.data.Grid
 import org.koin.compose.koinInject
@@ -37,24 +41,37 @@ fun GridComposable(
     gridMetadataId: Long,
     viewModel: GridViewModel = koinInject(),
 ) {
-    val grid by viewModel.getGrid(gridMetadataId).collectAsState(initial = null)
+    val state by viewModel.getState(gridMetadataId).collectAsState(initial = null)
 
-    GridScreen(grid = grid) { newGrid ->
-        viewModel.run(GridViewModel.Action.UpdateGrid(gridMetadataId, newGrid))
-    }
+    GridScreen(
+        state = state,
+        onGridChanged = { newGrid ->
+            viewModel.run(GridViewModel.Action.UpdateGrid(gridMetadataId, newGrid))
+        },
+        onDismiss = {
+            // TODO
+        }
+    )
 }
 
 @Composable
-fun GridScreen(grid: Grid?, onGridChanged: (Grid) -> Unit) {
-    if (grid == null)
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = "Loading grid",
-                modifier = Modifier.align(Alignment.Center)
-            )
+fun GridScreen(
+    state: GridViewModel.State?,
+    onGridChanged: (Grid) -> Unit,
+    onDismiss: () -> Unit
+) {
+    when (state) {
+        is GridViewModel.State.Idle -> GridComponent(grid = state.grid, onGridChanged = onGridChanged)
+        is GridViewModel.State.Success -> SuccessComponent(state, onDismiss = onDismiss)
+        else -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text(
+                    text = "Loading grid",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
-    else
-        GridComponent(grid, onGridChanged)
+    }
 }
 
 private val DECIMALS = MutableList(9) { index -> (index + 1).toString() }
@@ -69,6 +86,24 @@ private fun Grid.set(newValue: Int, rowIndex: Int, columnIndex: Int): Grid {
         set(rowIndex, newRow)
     }
     return newGrid
+}
+
+@Composable
+private fun SuccessComponent(
+    state: GridViewModel.State.Success,
+    onDismiss: () -> Unit
+) {
+    GridComponent(grid = state.grid, onGridChanged = { /* Nothing to do */ })
+    AlertDialog(
+        title = { Text(text = stringResource(id = R.string.grid_completed_title)) },
+        text = { Text(text = stringResource(id = R.string.grid_completed_text)) },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(id = R.string.dismiss))
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,7 +140,9 @@ private fun GridComponent(
                             },
                             enabled = !column.fixed,
                             readOnly = column.fixed,
-                            modifier = Modifier.weight(1F).fillMaxWidth(),
+                            modifier = Modifier
+                                .weight(1F)
+                                .fillMaxWidth(),
                             textStyle = TextStyle(
                                 color = if (column.fixed) Color.Black else Color.LightGray,
                                 background = Color.White
@@ -131,5 +168,9 @@ private fun Preview() {
                 )
             }
         }
-    GridScreen(grid) {}
+    GridScreen(
+        state = GridViewModel.State.Idle(grid),
+        onGridChanged = {},
+        onDismiss = {}
+    )
 }

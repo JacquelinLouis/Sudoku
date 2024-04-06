@@ -1,14 +1,11 @@
 package com.example.sudoku.feature.grid
 
 import com.example.sudoku.domain.data.Digit
-import com.example.sudoku.domain.usecase.GetGridDataUseCase
-import com.example.sudoku.domain.usecase.IsCompleteGridUseCase
-import com.example.sudoku.domain.usecase.IsValidGridUseCase
+import com.example.sudoku.domain.usecase.GetGridStateUseCase
 import com.example.sudoku.domain.usecase.UpdateGridDataUseCase
 import com.example.sudoku.feature.CoroutineScopeProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -19,33 +16,36 @@ import kotlin.test.assertEquals
 
 class GridViewModelTest {
 
-    private val getGridDataUseCase = mockk<GetGridDataUseCase>()
+    private val getGridStateUseCase = mockk<GetGridStateUseCase>()
 
     private val updateGridDataUseCase = mockk<UpdateGridDataUseCase>(relaxUnitFun = true)
 
-    private val isValidGridUseCase = mockk<IsValidGridUseCase> {
-        every { this@mockk(any()) }.returns(true)
-    }
-
-    private val isCompleteGridUseCase = mockk<IsCompleteGridUseCase> {
-        every { this@mockk(any()) }.returns(false)
-    }
-
     private fun viewModel(coroutineScope: CoroutineScope) = GridViewModel(
-        getGridDataUseCase = getGridDataUseCase,
+        getGridStateUseCase = getGridStateUseCase,
         updateGridDataUseCase = updateGridDataUseCase,
-        isValidGridUseCase = isValidGridUseCase,
-        isCompleteGridUseCase = isCompleteGridUseCase,
         coroutineScopeProvider = CoroutineScopeProvider(coroutineScope)
     )
 
     @Test
-    fun testGetState() {
+    fun testGetIdleState() {
         val gridMetadataId = 0L
         val grid = listOf(emptyList<Digit>())
-        val gridFlow = flowOf(grid)
-        coEvery { getGridDataUseCase(gridMetadataId) }.returns(gridFlow)
+        val gridFlow = flowOf(GetGridStateUseCase.State.Idle(grid))
+        coEvery { getGridStateUseCase(gridMetadataId) }.returns(gridFlow)
         val expected = GridViewModel.State.Idle(grid)
+
+        val result = runBlocking { viewModel(this).getState(gridMetadataId).first() }
+
+        assertEquals(result, expected)
+    }
+
+    @Test
+    fun testGetSuccessState() {
+        val gridMetadataId = 0L
+        val grid = listOf(emptyList<Digit>())
+        val gridFlow = flowOf(GetGridStateUseCase.State.Success(grid))
+        coEvery { getGridStateUseCase(gridMetadataId) }.returns(gridFlow)
+        val expected = GridViewModel.State.Success(grid)
 
         val result = runBlocking { viewModel(this).getState(gridMetadataId).first() }
 

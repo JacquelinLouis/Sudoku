@@ -11,16 +11,21 @@ class GenerateGridUseCaseTest {
         every { this@mockk.invoke() }.returns(MutableList(9) { index -> index + 1 })
     }
 
-    private val generateGridUseCase = GenerateGridUseCase(generatePossibleValues)
+    private val isValidGridValueUseCase = IsValidGridValueUseCase()
 
-    private val isValidGridUseCase = IsValidGridUseCase()
+    private val generateGridUseCase = GenerateGridUseCase(
+        generatePossibleValues = generatePossibleValues,
+        isValidGridValueUseCase = isValidGridValueUseCase
+    )
+
+    private val isValidGridUseCase = IsValidGridUseCase(isValidGridValueUseCase)
 
     @Test
     fun testInvoke() {
         val grid = generateGridUseCase()
 
         assert(isValidGridUseCase(grid)) {
-            "Invalid grid: ${grid.toPrettyString()}"
+            "Invalid grid:\n${grid.toPrettyString()}"
         }
     }
 

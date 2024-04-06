@@ -31,7 +31,7 @@ class IsValidGridUseCaseTest {
             }
         }
 
-    private val isValidGridUseCase = IsValidGridUseCase()
+    private val isValidGridUseCase = IsValidGridUseCase(IsValidGridValueUseCase())
 
     @Test
     fun testValidGrid() {

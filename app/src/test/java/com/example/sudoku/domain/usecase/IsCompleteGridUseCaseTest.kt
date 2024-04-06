@@ -7,11 +7,12 @@ import kotlin.test.assertTrue
 class IsCompleteGridUseCaseTest {
 
     private val completeGrid = GenerateGridUseCase(
-        GeneratePossibleValues()
+        GeneratePossibleValues(),
+        IsValidGridValueUseCase()
     ).invoke()
 
     private val isCompleteGridUseCase = IsCompleteGridUseCase(
-        IsValidGridUseCase()
+        IsValidGridUseCase(IsValidGridValueUseCase())
     )
 
     @Test

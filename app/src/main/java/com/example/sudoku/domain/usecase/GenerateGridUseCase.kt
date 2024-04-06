@@ -4,9 +4,11 @@ import com.example.sudoku.Config.Companion.GRID_LENGTH
 import com.example.sudoku.Config.Companion.GRID_SIZE
 import com.example.sudoku.domain.data.Digit
 import com.example.sudoku.domain.data.Grid
-import com.example.sudoku.domain.data.isValid
 
-class GenerateGridUseCase(val generatePossibleValues: GeneratePossibleValues) {
+class GenerateGridUseCase(
+    private val generatePossibleValues: GeneratePossibleValues,
+    private val isValidGridValueUseCase: IsValidGridValueUseCase
+) {
 
     private class GridIndex {
         private var _y: Int = 0
@@ -55,7 +57,7 @@ class GenerateGridUseCase(val generatePossibleValues: GeneratePossibleValues) {
 
         do {
             val value = possibleGridValues[gridIndex.index].firstOrNull { value ->
-                gridIndex.run { grid.isValid(x, y, value) }
+                gridIndex.run { isValidGridValueUseCase(grid, x, y, value) }
             }
             if (value == null) {
                 possibleGridValues[gridIndex.index] = VALUES.toMutableList()

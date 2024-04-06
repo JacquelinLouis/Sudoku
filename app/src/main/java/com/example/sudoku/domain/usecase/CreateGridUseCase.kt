@@ -9,7 +9,7 @@ class CreateGridUseCase(
     private val removeDigitsUseCase: RemoveDigitsUseCase
 ) {
 
-    operator fun invoke(): Long = removeDigitsUseCase(generateGridUseCase(), 9)
+    operator fun invoke(): Long = removeDigitsUseCase(generateGridUseCase(), 1)
         .let { grid ->
         gridRepository.createGrid(
             Calendar.getInstance().time,

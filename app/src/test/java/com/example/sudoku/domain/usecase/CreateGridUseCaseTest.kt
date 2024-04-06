@@ -51,7 +51,7 @@ class CreateGridUseCaseTest {
 
     private val gridId = 0L
 
-    private val removedDigits = 9
+    private val removedDigits = 1
 
     private val gridRepository = mockk<GridRepository> {
         every { createGrid(date, removedDigitsGrid) }.returns(gridId)

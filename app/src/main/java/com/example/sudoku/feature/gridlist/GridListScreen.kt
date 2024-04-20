@@ -18,8 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sudoku.domain.data.GridMetadata
 import org.koin.compose.koinInject
 import java.lang.IllegalStateException
+import java.util.Date
 
 @Composable
 fun GridListComposable(
@@ -38,10 +40,10 @@ fun GridListComposable(
         }
         else -> GridListScreen(
             state = localState,
-            onGridMetadataClick = onGridMetadataClick
-        ) {
-            viewModel.run(GridListViewModel.Action.Create)
-        }
+            onGridMetadataClick = onGridMetadataClick,
+            onCreateClick = { viewModel.run(GridListViewModel.Action.Create) },
+            onGridMetadataDelete = { viewModel.run(GridListViewModel.Action.Delete(it)) }
+        )
     }
 }
 
@@ -49,12 +51,13 @@ fun GridListComposable(
 private fun GridListScreen(
     state: GridListViewModel.State,
     onGridMetadataClick: (Long)->Unit = {},
-    onCreateClick: ()->Unit = {}
+    onCreateClick: ()->Unit = {},
+    onGridMetadataDelete: (Long)->Unit = {}
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (state) {
             GridListViewModel.State.Idle -> Idle(Modifier.align(Alignment.Center))
-            is GridListViewModel.State.Loaded -> Loaded(state, onGridMetadataClick)
+            is GridListViewModel.State.Loaded -> Loaded(state, onGridMetadataClick, onGridMetadataDelete)
             else -> throw IllegalStateException("Unhandled state $state")
         }
          FloatingActionButton(
@@ -72,5 +75,8 @@ private fun GridListScreen(
 @Preview(showSystemUi = true)
 @Composable
 private fun Preview() {
-    GridListScreen(GridListViewModel.State.Idle)
+    val list = MutableList(3) { index ->
+        GridMetadata(index.toLong(), Date(index.toLong()))
+    }
+    GridListScreen(GridListViewModel.State.Loaded(list))
 }

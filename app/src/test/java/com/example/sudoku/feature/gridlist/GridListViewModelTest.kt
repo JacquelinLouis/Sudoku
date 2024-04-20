@@ -4,6 +4,8 @@ import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.domain.usecase.CoroutineUseCase
+import com.example.sudoku.domain.usecase.DeleteGridUseCase
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
@@ -20,10 +22,13 @@ class GridListViewModelTest {
 
     private val createGridUseCase = mockk<CreateGridUseCase>()
 
+    private val deleteGridUseCase = mockk<DeleteGridUseCase>(relaxUnitFun = true)
+
     private fun gridViewModel(coroutineScope: CoroutineScope) = GridListViewModel(
         getGridsMetadataUseCase = getGridsMetadataUseCase,
         createGridUseCase = createGridUseCase,
-        coroutineUseCase = CoroutineUseCase(coroutineScope)
+        coroutineUseCase = CoroutineUseCase(coroutineScope),
+        deleteGridUseCase = deleteGridUseCase
     )
 
     @Test
@@ -50,5 +55,21 @@ class GridListViewModelTest {
         }
 
         assertEquals(GridListViewModel.State.Created(createdId), state)
+    }
+
+    @Test
+    fun testDeleteGrid() {
+        val gridMetadataId = 0L
+        every { getGridsMetadataUseCase() }
+            .returns(flowOf(listOf(GridMetadata(gridMetadataId, Date(0)))))
+
+
+        runBlocking {
+            val viewModel = gridViewModel(this)
+                .apply { run(GridListViewModel.Action.Delete(gridMetadataId)) }
+            viewModel.stateFlow.first()
+        }
+
+        coVerify { deleteGridUseCase(gridMetadataId) }
     }
 }

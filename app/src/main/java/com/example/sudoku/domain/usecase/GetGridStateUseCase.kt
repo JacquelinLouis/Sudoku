@@ -15,10 +15,11 @@ class GetGridStateUseCase(
     }
 
     operator fun invoke(gridMetadataId: Long) = getGridDataUseCase(gridMetadataId).map { grid ->
-        if (isCompleteGridUseCase(grid) && isValidGridUseCase(grid))
-            State.Success(grid)
-        else
-            State.Idle(grid)
+        when {
+            grid == null -> null
+            isCompleteGridUseCase(grid) && isValidGridUseCase(grid) -> State.Success(grid)
+            else -> State.Idle(grid)
+        }
     }
 
 }

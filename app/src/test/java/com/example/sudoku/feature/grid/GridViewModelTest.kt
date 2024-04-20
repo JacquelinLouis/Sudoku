@@ -1,6 +1,7 @@
 package com.example.sudoku.feature.grid
 
 import com.example.sudoku.domain.data.Digit
+import com.example.sudoku.domain.usecase.DeleteGridUseCase
 import com.example.sudoku.domain.usecase.GetGridStateUseCase
 import com.example.sudoku.domain.usecase.UpdateGridDataUseCase
 import com.example.sudoku.feature.CoroutineScopeProvider
@@ -20,11 +21,24 @@ class GridViewModelTest {
 
     private val updateGridDataUseCase = mockk<UpdateGridDataUseCase>(relaxUnitFun = true)
 
+    private val deleteGridUseCase = mockk<DeleteGridUseCase>(relaxUnitFun = true)
+
     private fun viewModel(coroutineScope: CoroutineScope) = GridViewModel(
         getGridStateUseCase = getGridStateUseCase,
         updateGridDataUseCase = updateGridDataUseCase,
+        deleteGridUseCase = deleteGridUseCase,
         coroutineScopeProvider = CoroutineScopeProvider(coroutineScope)
     )
+
+    @Test
+    fun testGetNullState() {
+        val gridMetadataId = 0L
+        coEvery { getGridStateUseCase(gridMetadataId) }.returns(flowOf(null))
+
+        val result = runBlocking { viewModel(this).getState(gridMetadataId).first() }
+
+        assertEquals(result, GridViewModel.State.Success)
+    }
 
     @Test
     fun testGetIdleState() {
@@ -32,11 +46,22 @@ class GridViewModelTest {
         val grid = listOf(emptyList<Digit>())
         val gridFlow = flowOf(GetGridStateUseCase.State.Idle(grid))
         coEvery { getGridStateUseCase(gridMetadataId) }.returns(gridFlow)
-        val expected = GridViewModel.State.Idle(grid)
 
         val result = runBlocking { viewModel(this).getState(gridMetadataId).first() }
 
-        assertEquals(result, expected)
+        assertEquals(result, GridViewModel.State.Idle(grid))
+    }
+
+    @Test
+    fun testDeleteGrid() {
+        val gridMetadataId = 0L
+        val grid = listOf(emptyList<Digit>())
+        val gridFlow = flowOf(GetGridStateUseCase.State.Success(grid))
+        coEvery { getGridStateUseCase(gridMetadataId) }.returns(gridFlow)
+
+        runBlocking { viewModel(this).getState(gridMetadataId).first() }
+
+        coVerify { deleteGridUseCase(gridMetadataId) }
     }
 
     @Test
@@ -45,11 +70,10 @@ class GridViewModelTest {
         val grid = listOf(emptyList<Digit>())
         val gridFlow = flowOf(GetGridStateUseCase.State.Success(grid))
         coEvery { getGridStateUseCase(gridMetadataId) }.returns(gridFlow)
-        val expected = GridViewModel.State.Success(grid)
 
         val result = runBlocking { viewModel(this).getState(gridMetadataId).first() }
 
-        assertEquals(result, expected)
+        assertEquals(result, GridViewModel.State.Success)
     }
 
     @Test

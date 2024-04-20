@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 
 class GetGridDataUseCase(private val gridRepository: GridRepository) {
 
-    operator fun invoke(gridMetadataId: Long): Flow<Grid> = gridRepository
-        .getGridData(gridMetadataId).map { it.digits }
+    operator fun invoke(gridMetadataId: Long): Flow<Grid?> = gridRepository
+        .getGridData(gridMetadataId).map { it?.digits }
 
 }

@@ -61,7 +61,7 @@ fun GridScreen(
 ) {
     when (state) {
         is GridViewModel.State.Idle -> GridComponent(grid = state.grid, onGridChanged = onGridChanged)
-        is GridViewModel.State.Success -> SuccessComponent(state, onDismiss = onDismiss)
+        is GridViewModel.State.Success -> SuccessComponent(onDismiss = onDismiss)
         else -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 Text(
@@ -88,11 +88,7 @@ private fun Grid.set(newValue: Int, rowIndex: Int, columnIndex: Int): Grid {
 }
 
 @Composable
-private fun SuccessComponent(
-    state: GridViewModel.State.Success,
-    onDismiss: () -> Unit
-) {
-    GridComponent(grid = state.grid, onGridChanged = { /* Nothing to do */ })
+private fun SuccessComponent(onDismiss: () -> Unit) {
     AlertDialog(
         title = { Text(text = stringResource(id = R.string.grid_completed_title)) },
         text = { Text(text = stringResource(id = R.string.grid_completed_text)) },

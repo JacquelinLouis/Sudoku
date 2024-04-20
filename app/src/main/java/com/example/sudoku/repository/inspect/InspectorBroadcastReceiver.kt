@@ -38,7 +38,7 @@ class InspectorBroadcastReceiver(
                     val grid = gridRepository.getGridData(gridMetadataEntity.id)
                     Log.d(
                         this@InspectorBroadcastReceiver::class.simpleName,
-                        grid.first().digits.joinToString { it.joinToString() }
+                        grid.first()?.digits?.joinToString { it.joinToString() } ?: ""
                     )
                 }
         }

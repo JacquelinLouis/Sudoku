@@ -2,9 +2,11 @@ package com.example.sudoku.feature.grid
 
 import androidx.lifecycle.ViewModel
 import com.example.sudoku.domain.data.Grid
+import com.example.sudoku.domain.usecase.DeleteGridUseCase
 import com.example.sudoku.domain.usecase.GetGridStateUseCase
 import com.example.sudoku.domain.usecase.UpdateGridDataUseCase
 import com.example.sudoku.feature.CoroutineScopeProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 class GridViewModel(
     private val getGridStateUseCase: GetGridStateUseCase,
     private val updateGridDataUseCase: UpdateGridDataUseCase,
+    private val deleteGridUseCase: DeleteGridUseCase,
     private val coroutineScopeProvider: CoroutineScopeProvider
 ): ViewModel() {
 
@@ -19,17 +22,22 @@ class GridViewModel(
         data class UpdateGrid(val gridMetadataId: Long, val grid: Grid): Action
     }
 
-    sealed class State(open val grid: Grid) {
-        data class Idle(override val grid: Grid): State(grid)
+    sealed interface State {
+        data class Idle(val grid: Grid): State
 
-        data class Success(override val grid: Grid): State(grid)
+        data object Success: State
     }
 
-    fun getState(gridMetadataId: Long): Flow<State> = getGridStateUseCase(gridMetadataId)
+    fun getState(gridMetadataId: Long): Flow<State?> = getGridStateUseCase(gridMetadataId)
         .map { state ->
             when(state) {
+                null -> State.Success
                 is GetGridStateUseCase.State.Idle -> State.Idle(state.grid)
-                is GetGridStateUseCase.State.Success -> State.Success(state.grid)
+                is GetGridStateUseCase.State.Success -> {
+                    coroutineScopeProvider.getViewModelScope(this)
+                        .launch(Dispatchers.IO) { deleteGridUseCase(gridMetadataId) }
+                    State.Success
+                }
             }
         }
 

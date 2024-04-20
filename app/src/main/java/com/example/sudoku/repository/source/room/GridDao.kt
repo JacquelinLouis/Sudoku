@@ -28,7 +28,7 @@ interface GridDao {
     fun insert(gridDataEntity: GridDataEntity): Long
 
     @Query("SELECT * FROM GridDataEntity WHERE gridMetadataId=:gridMetadataId")
-    fun get(gridMetadataId: Long): Flow<GridDataEntity>
+    fun get(gridMetadataId: Long): Flow<GridDataEntity?>
 
     @Update
     fun update(gridDataEntity: GridDataEntity)

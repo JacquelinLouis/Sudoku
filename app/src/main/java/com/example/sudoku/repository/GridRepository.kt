@@ -43,7 +43,7 @@ class GridRepository(
         gridsMetadata.map { GridMetadata(it.gridMetadataId, it.creation) }
     }
 
-    fun getGridData(gridMetadataId: Long) = gridDao.get(gridMetadataId).map { gridDataEntity ->
+    private val GridDataEntity?.gridData get() = this?.let { gridDataEntity ->
         val digits = mutableListOf<List<Digit>>().apply {
             for (i in 0 until Config.GRID_LENGTH) {
                 val values = gridDataEntity.values.substring(i * Config.GRID_LENGTH until  (i + 1) * Config.GRID_LENGTH).map { it.toString().toInt() }
@@ -63,11 +63,15 @@ class GridRepository(
         )
     }
 
+    fun getGridData(gridMetadataId: Long) = gridDao.get(gridMetadataId).map { it.gridData }
+
     suspend fun updateGrid(gridMetadataId: Long, grid: Grid) {
         val values = grid.joinToString("") { row ->
             row.joinToString("") { it.value.toString() }
         }
-        gridDao.update(gridDao.get(gridMetadataId).first().copy(values = values))
+        gridDao.get(gridMetadataId).first()?.copy(values = values)?.let { gridDataEntity ->
+            gridDao.update(gridDataEntity)
+        }
     }
 
     suspend fun deleteGrid(gridMetadataId: Long) {

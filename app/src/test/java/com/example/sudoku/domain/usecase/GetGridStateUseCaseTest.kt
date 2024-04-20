@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class GetGridStateUseCaseTest {
 
@@ -32,6 +33,15 @@ class GetGridStateUseCaseTest {
         isCompleteGridUseCase = isCompleteGridUseCase,
         isValidGridUseCase = isValidGridUseCase
     )
+
+    @Test
+    fun testNullState() {
+        every { getGridDataUseCase(gridMetadataId) }.returns(flowOf(null))
+
+        val gridState = runBlocking { getGridStateUseCase(gridMetadataId).first() }
+
+        assertNull(gridState)
+    }
 
     @Test
     fun testIdleState() {

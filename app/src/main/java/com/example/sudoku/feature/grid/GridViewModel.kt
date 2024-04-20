@@ -9,7 +9,6 @@ import com.example.sudoku.feature.CoroutineScopeProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class GridViewModel(
     private val getGridStateUseCase: GetGridStateUseCase,
@@ -34,8 +33,9 @@ class GridViewModel(
                 null -> State.Success
                 is GetGridStateUseCase.State.Idle -> State.Idle(state.grid)
                 is GetGridStateUseCase.State.Success -> {
-                    coroutineScopeProvider.getViewModelScope(this)
-                        .launch(Dispatchers.IO) { deleteGridUseCase(gridMetadataId) }
+                    coroutineScopeProvider.launch(this, Dispatchers.IO) {
+                        deleteGridUseCase(gridMetadataId)
+                    }
                     State.Success
                 }
             }
@@ -43,7 +43,7 @@ class GridViewModel(
 
     fun run(action: Action) {
         if (action is Action.UpdateGrid) {
-            coroutineScopeProvider.getViewModelScope(this).launch {
+            coroutineScopeProvider.launch(this) {
                 updateGridDataUseCase(action.gridMetadataId, action.grid)
             }
         }

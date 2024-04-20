@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 
 class GridListViewModel(
     getGridsMetadataUseCase: GetGridsMetadataUseCase,
@@ -38,7 +37,7 @@ class GridListViewModel(
 
     fun run(action: Action) {
         if (action is Action.Create)
-            coroutineScopeProvider.getViewModelScope(this).launch(Dispatchers.IO) {
+            coroutineScopeProvider.launch(this, Dispatchers.IO) {
                 val gridMetadataId = createGridUseCase()
                 _createdFlow.emit(gridMetadataId)
             }

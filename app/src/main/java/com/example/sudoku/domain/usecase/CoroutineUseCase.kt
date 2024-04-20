@@ -1,4 +1,4 @@
-package com.example.sudoku.feature
+package com.example.sudoku.domain.usecase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +13,9 @@ import kotlin.coroutines.EmptyCoroutineContext
  * (in tests for instance).
  * Instance should still be provided to be retrieved by Koin DSL constructor.
  */
-data class CoroutineScopeProvider(val coroutineScope: CoroutineScope? = null) {
+data class CoroutineUseCase(val coroutineScope: CoroutineScope? = null) {
 
-    fun launch(
+    operator fun invoke(
         viewModel: ViewModel,
         context: CoroutineContext = EmptyCoroutineContext,
         start: CoroutineStart = CoroutineStart.DEFAULT,

@@ -4,7 +4,7 @@ import com.example.sudoku.domain.data.Digit
 import com.example.sudoku.domain.usecase.DeleteGridUseCase
 import com.example.sudoku.domain.usecase.GetGridStateUseCase
 import com.example.sudoku.domain.usecase.UpdateGridDataUseCase
-import com.example.sudoku.feature.CoroutineScopeProvider
+import com.example.sudoku.domain.usecase.CoroutineUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -27,7 +27,7 @@ class GridViewModelTest {
         getGridStateUseCase = getGridStateUseCase,
         updateGridDataUseCase = updateGridDataUseCase,
         deleteGridUseCase = deleteGridUseCase,
-        coroutineScopeProvider = CoroutineScopeProvider(coroutineScope)
+        coroutineUseCase = CoroutineUseCase(coroutineScope)
     )
 
     @Test

@@ -3,7 +3,7 @@ package com.example.sudoku.feature.gridlist
 import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
-import com.example.sudoku.feature.CoroutineScopeProvider
+import com.example.sudoku.domain.usecase.CoroutineUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ class GridListViewModelTest {
     private fun gridViewModel(coroutineScope: CoroutineScope) = GridListViewModel(
         getGridsMetadataUseCase = getGridsMetadataUseCase,
         createGridUseCase = createGridUseCase,
-        coroutineScopeProvider = CoroutineScopeProvider(coroutineScope)
+        coroutineUseCase = CoroutineUseCase(coroutineScope)
     )
 
     @Test

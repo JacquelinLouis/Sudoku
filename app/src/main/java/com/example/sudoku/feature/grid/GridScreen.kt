@@ -39,6 +39,7 @@ import org.koin.compose.koinInject
 @Composable
 fun GridComposable(
     gridMetadataId: Long,
+    onDismiss: () -> Unit,
     viewModel: GridViewModel = koinInject(),
 ) {
     val state by viewModel.getState(gridMetadataId).collectAsState(initial = null)
@@ -48,9 +49,7 @@ fun GridComposable(
         onGridChanged = { newGrid ->
             viewModel.run(GridViewModel.Action.UpdateGrid(gridMetadataId, newGrid))
         },
-        onDismiss = {
-            // TODO
-        }
+        onDismiss = onDismiss
     )
 }
 

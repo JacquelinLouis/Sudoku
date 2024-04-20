@@ -44,7 +44,8 @@ class Navigation {
                     arguments = listOf(navArgument(GRID_METADATA_ID_ARG) { type = NavType.LongType })
                 ) { backStackEntry ->
                     GridComposable(
-                        gridMetadataId = backStackEntry.arguments!!.getLong(GRID_METADATA_ID_ARG)
+                        gridMetadataId = backStackEntry.arguments!!.getLong(GRID_METADATA_ID_ARG),
+                        onDismiss = { navController.popBackStack() }
                     )
                 }
             }

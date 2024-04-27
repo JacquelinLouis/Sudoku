@@ -1,0 +1,100 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "9019ce6ca853900d3129a80ffdab3cd9",
+    "entities": [
+      {
+        "tableName": "GridMetadataEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gridMetadataId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `creation` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "gridMetadataId",
+            "columnName": "gridMetadataId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creation",
+            "columnName": "creation",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "gridMetadataId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "GridDataEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gridDataId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gridMetadataId` INTEGER NOT NULL, `values` TEXT NOT NULL, `fixedValues` TEXT NOT NULL, FOREIGN KEY(`gridMetadataId`) REFERENCES `GridMetadataEntity`(`gridMetadataId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "gridDataId",
+            "columnName": "gridDataId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gridMetadataId",
+            "columnName": "gridMetadataId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values",
+            "columnName": "values",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fixedValues",
+            "columnName": "fixedValues",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "gridDataId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_GridDataEntity_gridMetadataId",
+            "unique": false,
+            "columnNames": [
+              "gridMetadataId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_GridDataEntity_gridMetadataId` ON `${TABLE_NAME}` (`gridMetadataId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "GridMetadataEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gridMetadataId"
+            ],
+            "referencedColumns": [
+              "gridMetadataId"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9019ce6ca853900d3129a80ffdab3cd9')"
+    ]
+  }
+}

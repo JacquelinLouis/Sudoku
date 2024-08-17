@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class GridViewModel(
-    private val getGridStateUseCase: GetGridStateUseCase,
+    private val gridMetadataId: Long,
+    getGridStateUseCase: GetGridStateUseCase,
     private val updateGridDataUseCase: UpdateGridDataUseCase,
     private val deleteGridUseCase: DeleteGridUseCase,
     private val coroutineUseCase: CoroutineUseCase
@@ -27,7 +28,7 @@ class GridViewModel(
         data object Success: State
     }
 
-    fun getState(gridMetadataId: Long): Flow<State?> = getGridStateUseCase(gridMetadataId)
+    val stateFlow: Flow<State?> = getGridStateUseCase(gridMetadataId)
         .map { state ->
             when(state) {
                 null -> State.Success

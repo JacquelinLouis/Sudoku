@@ -35,14 +35,15 @@ import com.example.sudoku.R
 import com.example.sudoku.domain.data.Digit
 import com.example.sudoku.domain.data.Grid
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun GridComposable(
     gridMetadataId: Long,
     onDismiss: () -> Unit,
-    viewModel: GridViewModel = koinInject(),
+    viewModel: GridViewModel = koinInject { parametersOf(gridMetadataId) },
 ) {
-    val state by viewModel.getState(gridMetadataId).collectAsState(initial = null)
+    val state by viewModel.stateFlow.collectAsState(initial = null)
 
     GridScreen(
         state = state,

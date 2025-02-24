@@ -33,12 +33,7 @@ class GridViewModel(
             when(state) {
                 null -> State.Success
                 is GetGridStateUseCase.State.Idle -> State.Idle(state.grid)
-                is GetGridStateUseCase.State.Success -> {
-                    coroutineUseCase(this, Dispatchers.IO) {
-                        deleteGridUseCase(gridMetadataId)
-                    }
-                    State.Success
-                }
+                is GetGridStateUseCase.State.Success -> State.Success
             }
         }
 
@@ -46,6 +41,16 @@ class GridViewModel(
         if (action is Action.UpdateGrid) {
             coroutineUseCase(this) {
                 updateGridDataUseCase(action.gridMetadataId, action.grid)
+            }
+        }
+    }
+
+    init {
+        coroutineUseCase(this, Dispatchers.Default) {
+            stateFlow.collect { state ->
+                if (state is State.Success) {
+                    deleteGridUseCase(gridMetadataId)
+                }
             }
         }
     }

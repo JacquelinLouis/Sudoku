@@ -5,10 +5,13 @@ import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.domain.usecase.CoroutineUseCase
 import com.example.sudoku.domain.usecase.DeleteGridUseCase
+import com.example.sudoku.domain.usecase.GetCurrentGridIdUseCase
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -18,27 +21,38 @@ import kotlin.test.assertEquals
 
 class GridListViewModelTest {
 
-    private val getGridsMetadataUseCase = mockk<GetGridsMetadataUseCase>()
+    private val getGridsMetadataUseCase = mockk<GetGridsMetadataUseCase> {
+        every { this@mockk() }.returns(flowOf(emptyList()))
+    }
 
-    private val createGridUseCase = mockk<CreateGridUseCase>()
+    private val createGridUseCase = mockk<CreateGridUseCase>(relaxUnitFun = true)
 
     private val deleteGridUseCase = mockk<DeleteGridUseCase>(relaxUnitFun = true)
+
+    private val getCurrentGridIdUseCase = mockk<GetCurrentGridIdUseCase> {
+        every { this@mockk() }.returns(MutableStateFlow(null))
+    }
 
     private fun gridViewModel(coroutineScope: CoroutineScope) = GridListViewModel(
         getGridsMetadataUseCase = getGridsMetadataUseCase,
         createGridUseCase = createGridUseCase,
         coroutineUseCase = CoroutineUseCase(coroutineScope),
-        deleteGridUseCase = deleteGridUseCase
+        deleteGridUseCase = deleteGridUseCase,
+        getCurrentGridIdUseCase = getCurrentGridIdUseCase
     )
 
     @Test
     fun testLoadedState() {
-        val list = emptyList<GridMetadata>()
-        every { getGridsMetadataUseCase() }.returns(flowOf(list))
-
         val state = runBlocking { gridViewModel(this).stateFlow.first() }
 
-        assertEquals(GridListViewModel.State.Loaded(list), state)
+        assertEquals(GridListViewModel.State.Loaded(emptyList()), state)
+    }
+
+    @Test
+    fun testCreateGrid() {
+        runBlocking { gridViewModel(this).run(GridListViewModel.Action.Create) }
+
+        verify { createGridUseCase() }
     }
 
     @Test
@@ -46,13 +60,9 @@ class GridListViewModelTest {
         val createdId = 0L
         every { getGridsMetadataUseCase() }
             .returns(flowOf(listOf(GridMetadata(createdId, Date(0)))))
-        every { createGridUseCase() }.returns(createdId)
+        every { getCurrentGridIdUseCase() }.returns(MutableStateFlow(createdId))
 
-
-        val state = runBlocking {
-            val viewModel = gridViewModel(this).apply { run(GridListViewModel.Action.Create) }
-            viewModel.stateFlow.first()
-        }
+        val state = runBlocking { gridViewModel(this).stateFlow.first() }
 
         assertEquals(GridListViewModel.State.Created(createdId), state)
     }
@@ -60,14 +70,9 @@ class GridListViewModelTest {
     @Test
     fun testDeleteGrid() {
         val gridMetadataId = 0L
-        every { getGridsMetadataUseCase() }
-            .returns(flowOf(listOf(GridMetadata(gridMetadataId, Date(0)))))
-
 
         runBlocking {
-            val viewModel = gridViewModel(this)
-                .apply { run(GridListViewModel.Action.Delete(gridMetadataId)) }
-            viewModel.stateFlow.first()
+            gridViewModel(this).run(GridListViewModel.Action.Delete(gridMetadataId))
         }
 
         coVerify { deleteGridUseCase(gridMetadataId) }

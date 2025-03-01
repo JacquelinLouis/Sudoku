@@ -9,12 +9,13 @@ class CreateGridUseCase(
     private val removeDigitsUseCase: RemoveDigitsUseCase
 ) {
 
-    operator fun invoke(): Long = removeDigitsUseCase(generateGridUseCase(), 1)
+    operator fun invoke(): Unit = removeDigitsUseCase(generateGridUseCase(), 1)
         .let { grid ->
-        gridRepository.createGrid(
-            Calendar.getInstance().time,
-            grid
-        )
+            val createdGridId = gridRepository.createGrid(
+                Calendar.getInstance().time,
+                grid
+            )
+            gridRepository.setCurrentGridId(createdGridId)
     }
 
 }

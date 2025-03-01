@@ -7,8 +7,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import io.mockk.verify
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.util.Calendar
@@ -55,6 +55,7 @@ class CreateGridUseCaseTest {
 
     private val gridRepository = mockk<GridRepository> {
         every { createGrid(date, removedDigitsGrid) }.returns(gridId)
+        every { setCurrentGridId(gridId) }.returns(true)
     }
 
     private val generateGridUseCase = mockk<GenerateGridUseCase> {
@@ -78,8 +79,31 @@ class CreateGridUseCaseTest {
     }
 
     @Test
-    fun testInvoke() {
-        assertEquals(gridId, createGridUseCase())
+    fun testGenerateGrid() {
+        createGridUseCase()
+
+        verify { generateGridUseCase() }
+    }
+
+    @Test
+    fun testRemoveDigits() {
+        createGridUseCase()
+
+        verify { removeDigitsUseCase(grid, 1) }
+    }
+
+    @Test
+    fun testCreateGrid() {
+        createGridUseCase()
+
+        verify { gridRepository.createGrid(date, removedDigitsGrid) }
+    }
+
+    @Test
+    fun testSetCurrentGridId() {
+        createGridUseCase()
+
+        verify { gridRepository.setCurrentGridId(gridId) }
     }
 
     @After

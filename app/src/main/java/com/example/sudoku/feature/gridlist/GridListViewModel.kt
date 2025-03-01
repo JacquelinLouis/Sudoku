@@ -6,8 +6,8 @@ import com.example.sudoku.domain.usecase.CreateGridUseCase
 import com.example.sudoku.domain.usecase.GetGridsMetadataUseCase
 import com.example.sudoku.domain.usecase.CoroutineUseCase
 import com.example.sudoku.domain.usecase.DeleteGridUseCase
+import com.example.sudoku.domain.usecase.GetCurrentGridIdUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -15,7 +15,8 @@ class GridListViewModel(
     getGridsMetadataUseCase: GetGridsMetadataUseCase,
     private val createGridUseCase: CreateGridUseCase,
     private val coroutineUseCase: CoroutineUseCase,
-    private val deleteGridUseCase: DeleteGridUseCase
+    private val deleteGridUseCase: DeleteGridUseCase,
+    getCurrentGridIdUseCase: GetCurrentGridIdUseCase
 ): ViewModel() {
 
     sealed class State {
@@ -29,9 +30,7 @@ class GridListViewModel(
         data class Delete(val gridMetadataId: Long): Action
     }
 
-    private val _createdFlow = MutableStateFlow<Long?>(null)
-
-    val stateFlow = combine(getGridsMetadataUseCase(), _createdFlow) { gridsMetadata, createdId ->
+    val stateFlow = combine(getGridsMetadataUseCase(), getCurrentGridIdUseCase()) { gridsMetadata, createdId ->
         if (createdId != null && gridsMetadata.any { it.id == createdId })
             State.Created(createdId)
         else
@@ -41,8 +40,7 @@ class GridListViewModel(
     fun run(action: Action) {
         when (action) {
             Action.Create -> coroutineUseCase(this, Dispatchers.IO) {
-                val gridMetadataId = createGridUseCase()
-                _createdFlow.emit(gridMetadataId)
+                createGridUseCase()
             }
             is Action.Delete -> coroutineUseCase(this, Dispatchers.IO) {
                 deleteGridUseCase(action.gridMetadataId)

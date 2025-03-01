@@ -8,6 +8,8 @@ import com.example.sudoku.domain.data.GridMetadata
 import com.example.sudoku.repository.source.room.GridDao
 import com.example.sudoku.repository.source.room.GridDataEntity
 import com.example.sudoku.repository.source.room.GridMetadataEntity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.Date
@@ -15,6 +17,12 @@ import java.util.Date
 class GridRepository(
     private val gridDao: GridDao
 ) {
+
+    private val _currentGridId = MutableStateFlow<Long?>(null)
+
+    val currentGrid: StateFlow<Long?> = _currentGridId
+
+    fun setCurrentGridId(id: Long) = _currentGridId.tryEmit(id)
 
     fun createGrid(date: Date, digits: List<List<Digit>>): Long {
         val gridMetadataId = gridDao.insert(GridMetadataEntity(creation = date))

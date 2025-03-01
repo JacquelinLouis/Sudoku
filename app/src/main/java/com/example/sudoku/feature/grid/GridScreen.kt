@@ -1,7 +1,7 @@
 package com.example.sudoku.feature.grid
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -108,48 +108,46 @@ private fun GridComponent(
     grid: Grid,
     onGridChanged: (Grid) -> Unit
 ) {
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxHeight(),
+        verticalArrangement = Arrangement.Center
     ) {
-        Column {
-            grid.forEachIndexed { rowIndex, row ->
-                Divider(color = if (0 < rowIndex && rowIndex % 3 == 0) Color.Black else Color.LightGray)
-                Row(modifier = Modifier.height(IntrinsicSize.Max)) {
-                    row.forEachIndexed { columnIndex, column ->
-                        Divider(
-                            modifier = Modifier
-                                .width(1.dp)
-                                .fillMaxHeight(),
-                            color = if (0 < columnIndex && columnIndex % 3 == 0) Color.Black else Color.LightGray
-                        )
+        grid.forEachIndexed { rowIndex, row ->
+            Divider(color = if (0 < rowIndex && rowIndex % 3 == 0) Color.Black else Color.LightGray)
+            Row(modifier = Modifier.height(IntrinsicSize.Max)) {
+                row.forEachIndexed { columnIndex, column ->
+                    Divider(
+                        modifier = Modifier
+                            .width(1.dp)
+                            .fillMaxHeight(),
+                        color = if (0 < columnIndex && columnIndex % 3 == 0) Color.Black else Color.LightGray
+                    )
 
-                        var text by remember { mutableStateOf(column.value.takeIf { it != 0 }?.toString() ?: "") }
+                    var text by remember { mutableStateOf(column.value.takeIf { it != 0 }?.toString() ?: "") }
 
-                        TextField(
-                            value = text,
-                            onValueChange = {
-                                text = it.filterDecimal()
-                                text.toIntOrNull()?.let { newValue ->
-                                    onGridChanged(grid.set(newValue, rowIndex, columnIndex))
-                                }
-                            },
-                            enabled = !column.fixed,
-                            readOnly = column.fixed,
-                            modifier = Modifier
-                                .weight(1F)
-                                .fillMaxWidth(),
-                            textStyle = TextStyle(
-                                color = if (column.fixed) Color.Black else Color.LightGray,
-                                background = Color.White
-                            ),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                        )
-                    }
+                    TextField(
+                        value = text,
+                        onValueChange = {
+                            text = it.filterDecimal()
+                            text.toIntOrNull()?.let { newValue ->
+                                onGridChanged(grid.set(newValue, rowIndex, columnIndex))
+                            }
+                        },
+                        enabled = !column.fixed,
+                        readOnly = column.fixed,
+                        modifier = Modifier
+                            .weight(1F)
+                            .fillMaxWidth(),
+                        textStyle = TextStyle(
+                            color = if (column.fixed) Color.Black else Color.LightGray,
+                            background = Color.White
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                    )
                 }
             }
-            Divider(color = Color.LightGray)
         }
+        Divider(color = Color.LightGray)
     }
 }
 
